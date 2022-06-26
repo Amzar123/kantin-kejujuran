@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +19,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/login', function () {
-    return view('auth.login');
+
+
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'index')->name('login');
+    Route::post('/create', 'store');
+    Route::get('/logout', 'logout');
+    Route::get('/register', 'show')->name('register');
+    Route::post('/create-register', 'register');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/product-list', [ProductController::class, 'index']);
 });
